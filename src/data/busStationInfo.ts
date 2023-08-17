@@ -1,0 +1,1 @@
+export const busStationNo='115000896'; //마곡역(중) 내 집 방향
