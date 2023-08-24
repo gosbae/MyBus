@@ -1,7 +1,9 @@
-import {Text, StyleSheet, View, ImageBackground} from 'react-native';
+import {Animated ,Text, StyleSheet, View, ImageBackground} from 'react-native';
 import type { BusDataProps } from '../server/gyeonggiBusArriveInfo';
+import {useRef} from 'react';
 
 const BusInfo = ({busNumber, predictTime1, predictTime2, busRootName }: BusDataProps) => {
+    const animation = useRef(new Animated.Value(1)).current;
 
     return (
         <View style={styles.busInfoContainer}>
@@ -58,7 +60,8 @@ const styles = StyleSheet.create({
     leftContainer: {
         flex: 3,
         alignItems: 'center',
-    }
+    },
+
 })
 
 export default BusInfo;

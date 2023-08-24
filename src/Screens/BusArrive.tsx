@@ -2,26 +2,31 @@ import {Button, Text, StyleSheet, View, FlatList} from 'react-native';
 import BusInfo from '../Components/BusInfo';
 import {FetchGyeonggiBusInfo} from '../server/gyeonggiBusArriveInfo';
 import type {BusDataProps} from '../server/gyeonggiBusArriveInfo';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
+
 
 const BusArrive = () => {
   const [busData, setBusData] = useState<Array<BusDataProps>>([]);
+
   async function fetchBusInfo() {
     try {
       const data = await FetchGyeonggiBusInfo();
+      console.log(data);
       setBusData(
         data.sort((a, b) => Number(a.predictTime1) - Number(b.predictTime1)),
       );
-      console.log(busData);
+
+
     } catch (e) {
       console.log(e);
     }
   }
   useEffect(() => {
     fetchBusInfo();
-    // const fetchMin = setInterval(fetchBusInfo, 60000);
-    // return () => clearInterval(fetchMin);
+    const fetchMin = setInterval(fetchBusInfo, 60000);
+    return () => clearInterval(fetchMin);
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
