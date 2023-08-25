@@ -1,13 +1,13 @@
-import {Button, Text, StyleSheet, View, FlatList} from 'react-native';
+import {Button, Text, StyleSheet, View, FlatList, Animated, ImageBackground} from 'react-native';
 import BusInfo from '../Components/BusInfo';
 import {FetchGyeonggiBusInfo} from '../server/gyeonggiBusArriveInfo';
 import type {BusDataProps} from '../server/gyeonggiBusArriveInfo';
 import {useEffect, useRef, useState} from 'react';
-
+import {fadeIn} from '../styles/animation/normalanimation';
 
 const BusArrive = () => {
   const [busData, setBusData] = useState<Array<BusDataProps>>([]);
-
+  const fadeAnim = useRef(new Animated.Value(0)).current;
   async function fetchBusInfo() {
     try {
       const data = await FetchGyeonggiBusInfo();
@@ -26,15 +26,20 @@ const BusArrive = () => {
     const fetchMin = setInterval(fetchBusInfo, 60000);
     return () => clearInterval(fetchMin);
   }, []);
-
+  useEffect(() => {
+    fadeIn(fadeAnim);
+  }, [fadeAnim]);
   return (
     <View style={styles.container}>
+      <ImageBackground source={require('../img/busInfoBackground.jpg')}
+      style={styles.imgBackground}
+      >
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>무슨 버스가 먼저 올라나</Text>
+        <Text style={styles.headerText}>집에 가자</Text>
       </View>
       <View style={styles.bodyContainer}>
-        <FlatList
-          style={{flex: 1, marginTop: 30}}
+        <Animated.FlatList
+          style={{flex: 1, marginTop: 29}}
           data={busData}
           renderItem={({item}) => (
             <BusInfo
@@ -42,11 +47,13 @@ const BusArrive = () => {
               busRootName={item.busRootName}
               predictTime1={item.predictTime1}
               predictTime2={item.predictTime2}
+              fadeAnim={fadeAnim}
             />
           )}
           keyExtractor={item => item.busNumber}
         />
       </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -54,7 +61,6 @@ const BusArrive = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(156, 192, 240, 0.852)',
   },
   headerContainer: {
     flex: 2,
@@ -68,6 +74,9 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 30,
     fontWeight: 'bold',
+  },
+  imgBackground: {
+    flex: 1,
   },
 });
 
